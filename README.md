@@ -5,7 +5,7 @@ Currently just does binary addition (e.g. 3 +3)
 
 ##Use
 
-Currently hosted at [http://cs.okstate.edu/shortjm/compiler](http://cs.okstate.edu/shortjm/compiler). Follow the instructions on the page.
+Currently hosted at [http://cs.okstate.edu/~shortjm/compiler](http://cs.okstate.edu/~shortjm/compiler). Follow the instructions on the page.
 
 If you want to run this project on your own computer after building, you must serve it from a web server (don't just point your web browser to a file - must use http). This is due to `llvm.js` pulling its dependencies in via javascript requests. To do this from python 3 (assuming python is on your path), navigate to the `/build` directory of the project and then type `python -m http.server`.
 
