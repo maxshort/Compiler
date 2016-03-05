@@ -1,27 +1,178 @@
 <html>
 	<head>
+		<style>
+			.resultsBox {
+				border-style: solid;
+				border-width: 1px;
+			}
+			.resultsRunning{
+				background-color:#ADD8E6;
+			}
+			.resultsError{
+			
+			}
+			.resultsValid{
+			
+			}
+		</style>
+		<script>
+			print = function (x) {
+				console.log(x);
+			}
+		</script>
 		<title>
-			Hello World!
+			The language of binary Addition.
 		</title>
 		<script src="llvm.js/llvm-as.js"></script>
 		<script src="llvm.js/llvm-dis.js"></script>
-		
+		<script src="llvm.js/utility.js"></script>
+		<script src="llvm.js/compiler.js"></script>
+		<script src="parser.js"></script>
 	</head>
 	<body>
+		<h1>The langauge of binary addition</h1>
 		
-		<input id="progInput">
+		<label for="progInput">Enter your program here:</label>
+		<input id="progInput" name="progInput">
+		<input type="button" id="goButton" onclick="parseAndRun()" value="Run program"	>
 		<script>
-			
-			function parse() {
-				
-			}
 		
-			function compileAndRun() {
+			
+			function parseAndRun() {
 				
+				var makeTree = function makeTree(rawInput) {
+				
+					return new Promise(function(resolve, reject) {
+						try {
+							resolve (parser.parse(rawInput));
+						}
+						catch (e) {
+							reject({parseError:e});
+						}
+					});
+				};
+				
+				//named like that to not override func
+				var compilePromise = function compilePromise(syntaxTree) {
+					//return new Promise(function(resolve, reject) {				
+						console.log("Syntax tree here: " + JSON.stringify(syntaxTree));
+						var generatedAssembly = genAssembly(syntaxTree);
+						var compilerOutput ='';
+						print = function(x) {
+							compilerOutput += x;
+						}
+						try {
+							compile(generatedAssembly);
+							console.log("AFTER COMPILE");
+							return compilerOutput;
+							//resolve(blah);//resolve(compilerOutput);
+						}
+						catch (e) {
+							//reject(e);
+							throw {compileError:e};
+						}
+							
+				//});
+				};
+				
+				
+				
+				var runPromise = function(compiledCode) {
+				
+					return new Promise(function (resolve, reject) {
+						console.log("Compiled code here: " + compiledCode);
+						Module={}; //THIS IS A GLOBAL VARIABLE B/C of emiscripten design...
+						var output='';
+						Module.print = function(x) {
+							output+=x;
+						}
+						try {
+							eval(compiledCode);
+							resolve(output);
+						} 
+						catch(e) {
+							reject({runError:e});
+						}
+					
+					});
+				}
+								
+				makeTree(document.getElementById("progInput").value)
+				.then(function(result) {
+					return compilePromise(result); //returns a new promise from compile
+				})
+				.then(function(result) {
+					return runPromise(result);
+				})
+				.then(function(result) {
+					alert("RESuLT: " + result);
+				})
+				.catch(
+				function(err) {
+					if (typeof err.parseError!=='undefined') {
+						alert("Parse error: "+err.parseError.message);
+					}
+					else if (typeof err.compileError !=='undefined') {
+						alert("compile error: " + err.compileError);
+					}
+					else if (typeof err.runError !== 'undefined') {
+						alert("run error: " + err.runError);
+					}
+					else {
+						alert("unknown error: "+ err);
+					}
+				});
+				/*
+			
+				
+				
+				
+				document.getElementById("resultDiv").classList.add("resultsRunning");
+				var outputElement=document.getElementById("results");
+				outputElement.innerHTML = "";
+				
+				//compiling
+				
+				compilerOutput = '';
+				oldPrint = print;
+
+				//running
+				
+				//print("AFTER EVALUATE");
+				*/
 			}
-		</script>
-		<p>Hello world</p>
-		<input type="button" id="goButton">
-		<script src="out.js"></script>
+
+			function genAssembly(parseTree) {
+				var byteCode = ('target triple = "i386-pc-linux-gnu"\n'+
+
+			'@.prf = private constant [2 x i8] c"%i"\n'+
+
+
+			'define i32 @main() {\n'+
+			'entry:\n'+
+			  '%str1 = getelementptr inbounds [2 x i8]* @.prf, i32 0, i32 0\n'+ 
+			  '%0 = add i32 ' + parseTree.arguments[0] + ',' + parseTree.arguments[2] + '\n'+
+			  '%acall = call i32 (i8*,...)* @printf(i8* %str1, i32 %0)\n'+
+			  'ret i32 1\n'+
+			'}\n'+
+
+			'declare i32 @printf(i8*, ...)\n');
+			return llvmDis(llvmAs(byteCode)); 
+			};
+				</script>
+		<p>Results: </p>		
+		<div id="resultDiv" class="resultsBox">
+			<p id ="results"></p>
+		</div>
+		<h3>Valid programs: </h3>
+		<ul>
+			<li>a and b must be positive integers</li>
+			<li>does not care about whitespace</li>
+			<li>Examples(remove quotes):</li>
+			<ul>
+				<li>"2+2"</li>
+				<li>"4 + 8"</li>
+			</ul>
+		</ul>
 	</body>
 </html>

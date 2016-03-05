@@ -2,15 +2,13 @@
   "name": "simplecomp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "bufferutil": "^1.2.1",
-    "utf-8-validate": "^1.2.1",
-    "ws": "^1.0.1"
+    "gulp-shell": "^0.5.2",
+    "merge-stream": "^1.0.0"
   }
 }
