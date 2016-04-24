@@ -39,11 +39,15 @@
 %start PRGRM
 
 %%
-PRGRM: LET_STMT PRGRM {alert("TOP WAS CALLED"); return shallowMerge($1, $2);}
-	  | EQ_STMT EOF {alert("SECOND WAS CALLED"); $$ = $1;}
-	  ;
+PRGRM: LET_STMT EOF {return $1; }
+	| EXPR EOF {return $1; }
+;
 
-LET_STMT: "let" EQ_STMT "in" {$$ = $2;}
+LET_STMT: "let" EQ_STMT_GRP "in" EXPR {$$ = $2;}
+;
+
+EQ_STMT_GRP: EQ_STMT EQ_STMT_GRP {$$ = shallowMerge($1, $2);}
+			| EQ_STMT {$$ = $1;}
 ;
 
 EQ_STMT: ID "=" EXPR {sylList = {}; sylList[$1] = $3; $$ = sylList;}
@@ -61,8 +65,6 @@ EXPR: '(' EXPR ')' {$$= $2;}
 	;
 %%
 function shallowMerge(x, y) {
-		alert(1 + JSON.stringify(x));
-		alert(2 + JSON.stringify(y));
 		temp = Object.assign({}, x);
 		return Object.assign(temp, y);
 }
