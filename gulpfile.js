@@ -1,5 +1,7 @@
 var fs = require('fs');
 var gulp = require("gulp");
+var htmlhint = require("gulp-htmlhint");
+var jshint = require("gulp-jshint");
 var merge = require("merge-stream");
 var shell = require('gulp-shell');
 var GulpSSH = require('gulp-ssh');
@@ -28,10 +30,12 @@ gulp.task('makeParser', ['flattenFiles'],
 );
 
 gulp.task('flattenFiles', function() {
-	var llvmStuff = gulp.src('llvm.js/*.js');
-	var myPage = gulp.src('index.html');
+	var myPage = gulp.src('index.html')
+		.pipe(jshint.reporter("fail"))
+		.pipe(htmlhint.failReporter());
+		
 	var myJison = gulp.src('parseInfo.jison');
 	
-	return merge(llvmStuff, myPage, myJison)
+	return merge(myPage, myJison)
 	.pipe(gulp.dest('build'));
 });

@@ -15,18 +15,9 @@
 			
 			}
 		</style>
-		<script>
-			print = function (x) {
-				console.log(x);
-			}
-		</script>
 		<title>
 			The language of binary Addition.
 		</title>
-		<script src="llvm-as.js"></script>
-		<script src="llvm-dis.js"></script>
-		<script src="utility.js"></script>
-		<script src="compiler.js"></script>
 		<script src="parser.js"></script>
 	</head>
 	<body>
@@ -52,61 +43,13 @@
 					});
 				};
 				
-				//named like that to not override func
-				var compilePromise = function compilePromise(syntaxTree) {
-					//return new Promise(function(resolve, reject) {				
-						console.log("Syntax tree here: " + JSON.stringify(syntaxTree));
-						var generatedAssembly = genAssembly(syntaxTree);
-						var compilerOutput ='';
-						print = function(x) {
-							compilerOutput += x;
-						}
-						try {
-							compile(generatedAssembly);
-							console.log("AFTER COMPILE");
-							return compilerOutput;
-							//resolve(blah);//resolve(compilerOutput);
-						}
-						catch (e) {
-							//reject(e);
-							throw {compileError:e};
-						}
-							
-				//});
-				};
 				
-				
-				
-				var runPromise = function(compiledCode) {
-				
-					return new Promise(function (resolve, reject) {
-						console.log("Compiled code here: " + compiledCode);
-						Module={}; //THIS IS A GLOBAL VARIABLE B/C of emiscripten design...
-						var output='';
-						Module.print = function(x) {
-							output+=x;
-						}
-						try {
-							eval(compiledCode);
-							resolve(output);
-						} 
-						catch(e) {
-							reject({runError:e});
-						}
-					
-					});
-				}
-								
+						
 				makeTree(document.getElementById("progInput").value)
 				.then(function(result) {
-					return compilePromise(result); //returns a new promise from compile
+					alert("Result: " + result);
 				})
-				.then(function(result) {
-					return runPromise(result);
-				})
-				.then(function(result) {
-					alert("RESuLT: " + result);
-				})
+				
 				.catch(
 				function(err) {
 					if (typeof err.parseError!=='undefined') {

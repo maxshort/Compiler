@@ -3,19 +3,34 @@
 %lex
 
 %%
-\d+ return "NUMERIC_LITERAL"
+\d+ {return "NUMERIC_LITERAL";}
 \s+ /*Ignore whitespace*/
-\+  return "PLUS_SIGN"
-<<EOF>> return "EOF"
+<<EOF>> {return "EOF";}
+'+' {return "+";}
+"-" {return "-";}
+"*" {return "*";}
+"/" {return "/";}
+"(" {return "(";}
+")" {return ")";}
+
 . return "INVALID"
 
 /lex
 
-%start EXPR
+%left '*' '/'
+%left '+' '-'
+
+
+%start EXPRS
 
 %%
-EXPR: ADD_EXPR 1 {console.log($1); return $1}; /*No idea why the 1 has to be here...*/
-ADD_EXPR: NUMERIC_LITERAL PLUS_SIGN NUMERIC_LITERAL {{$$={
-	type:'ADD_EXPR',
-	arguments:[$1, $2, $3]};};}
+EXPRS: EXPR EOF {console.log($1); return $1;}
+;
+
+EXPR: '(' EXPR ')' {console.log("IN EXPR:" + $2); $$= $2;}
+	| EXPR '+' EXPR {alert("IN Plus"); $$= $1 + $3;}
+	| EXPR '-' EXPR {$$= $1 - $3;}
+	| EXPR '*' EXPR {$$= $1 * $3;}
+	| EXPR '/' EXPR {$$= $1 / $3;}
+	| NUMERIC_LITERAL {alert("IN LITERAL: " + $1); $$= +($1);} 
 	;
