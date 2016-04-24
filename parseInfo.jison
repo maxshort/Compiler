@@ -1,3 +1,12 @@
+%{/*var funcs = {
+	shallowMerge:function shallowMerge(x, y) {
+		alert(1 + JSON.Stringify(x));
+		alert(2 + JSON.Stringify(y));
+		temp = Object.assign({}, x);
+		return Object.assign(temp, y);
+	}
+	}*/
+%}
 
 
 %lex
@@ -30,10 +39,11 @@
 %start PRGRM
 
 %%
-PRGRM: LET_STMT EOF {return $1;}
-;
+PRGRM: LET_STMT PRGRM {alert("TOP WAS CALLED"); return shallowMerge($1, $2);}
+	  | EQ_STMT EOF {alert("SECOND WAS CALLED"); $$ = $1;}
+	  ;
 
-LET_STMT: "let" EQ_STMT "in" {return $2;}
+LET_STMT: "let" EQ_STMT "in" {$$ = $2;}
 ;
 
 EQ_STMT: ID "=" EXPR {sylList = {}; sylList[$1] = $3; $$ = sylList;}
@@ -42,10 +52,17 @@ EQ_STMT: ID "=" EXPR {sylList = {}; sylList[$1] = $3; $$ = sylList;}
 /*EXPRS: EXPR EOF {console.log($1); return $1;}
 ;*/
 
-EXPR: '(' EXPR ')' {console.log("IN EXPR:" + $2); $$= $2;}
+EXPR: '(' EXPR ')' {$$= $2;}
 	| EXPR '+' EXPR {$$= $1 + $3;}
 	| EXPR '-' EXPR {$$= $1 - $3;}
 	| EXPR '*' EXPR {$$= $1 * $3;}
 	| EXPR '/' EXPR {$$= $1 / $3;}
 	| NUMERIC_LITERAL {$$= +($1);} 
 	;
+%%
+function shallowMerge(x, y) {
+		alert(1 + JSON.stringify(x));
+		alert(2 + JSON.stringify(y));
+		temp = Object.assign({}, x);
+		return Object.assign(temp, y);
+}
