@@ -47,7 +47,7 @@
 						
 				makeTree(document.getElementById("progInput").value)
 				.then(function(result) {
-					alert("Result: " + result);
+					alert("Result: " + JSON.stringify(result));
 				})
 				
 				.catch(

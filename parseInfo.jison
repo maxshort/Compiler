@@ -12,6 +12,8 @@
 "/" {return "/";}
 "(" {return "(";}
 ")" {return ")";}
+[a-zA-Z][a-zA-z0-9_']* {return "ID";}
+"=" {return "=";}
 
 . return "INVALID"
 
@@ -21,11 +23,17 @@
 %left '+' '-'
 
 
-%start EXPRS
+%start PRGRM
 
 %%
-EXPRS: EXPR EOF {console.log($1); return $1;}
+PRGRM: EQ_STMT EOF {return $1;}
 ;
+
+EQ_STMT: ID "=" EXPR {sylList = {}; sylList[$1] = $3; $$ = sylList;}
+;
+
+/*EXPRS: EXPR EOF {console.log($1); return $1;}
+;*/
 
 EXPR: '(' EXPR ')' {console.log("IN EXPR:" + $2); $$= $2;}
 	| EXPR '+' EXPR {$$= $1 + $3;}
