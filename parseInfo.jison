@@ -28,9 +28,9 @@ EXPRS: EXPR EOF {console.log($1); return $1;}
 ;
 
 EXPR: '(' EXPR ')' {console.log("IN EXPR:" + $2); $$= $2;}
-	| EXPR '+' EXPR {alert("IN Plus"); $$= $1 + $3;}
+	| EXPR '+' EXPR {$$= $1 + $3;}
 	| EXPR '-' EXPR {$$= $1 - $3;}
 	| EXPR '*' EXPR {$$= $1 * $3;}
 	| EXPR '/' EXPR {$$= $1 / $3;}
-	| NUMERIC_LITERAL {alert("IN LITERAL: " + $1); $$= +($1);} 
+	| NUMERIC_LITERAL {$$= +($1);} 
 	;
