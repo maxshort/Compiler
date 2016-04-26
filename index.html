@@ -47,12 +47,16 @@
 						
 				makeTree(document.getElementById("progInput").value)
 				.then(function(result) {
-					alert("Result: " + JSON.stringify(result));
+					alert("Prelim tree: " + JSON.stringify(result));
 				})
-				
+				.then (function(result) {
+					//TODO: evaluate exprs here...
+					evaluateNode(result);
+				})
 				.catch(
 				function(err) {
 					if (typeof err.parseError!=='undefined') {
+						console.log(err);
 						alert("Parse error: "+err.parseError.message);
 					}
 					else if (typeof err.compileError !=='undefined') {
@@ -85,6 +89,25 @@
 				*/
 			}
 
+			function evaluateNode(node, context) {
+				if (!isNaN(node.value)) {
+					return node.value;
+				}
+				//http://stackoverflow.com/questions/5999998/how-can-i-check-if-a-javascript-variable-is-function-type
+				else if (typeof node.value === "function" && Object.prototype.toString.call(node.value) == "[object Function]") {
+					node.leftValue = evaluateNode(node.leftValue, context);
+					node.rightValue = evaluateNode(node.rightValue, context);
+					node.value = node.value(node.leftValue, node.rightValue);
+				}
+				else if (typeof node.value === "string") {
+					node.value = evaluateNode(context[node.value]);
+				}
+				else {
+					throw {compileError:{message:"Unknown type for node value: " + node.value}};
+				}
+					
+			}
+			
 			function genAssembly(parseTree) {
 				var byteCode = ('target triple = "i386-pc-linux-gnu"\n'+
 
