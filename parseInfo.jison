@@ -14,7 +14,10 @@
 %%
 //Lex goes in order so keywords have to go first
 "let" {return "let";}
-"in" {return "in"} //
+"in" {return "in";} 
+"if" {return "if";}
+"then" {return "then";}
+"else" {return "else";}
 \d+ {return "NUMERIC_LITERAL";}
 \s+ /*Ignore whitespace*/
 <<EOF>> {return "EOF";}
@@ -25,7 +28,11 @@
 "(" {return "(";}
 ")" {return ")";}
 [a-zA-Z][a-zA-z0-9_']* {return "ID";}
+"==" {return "==";}
 "=" {return "=";}
+"<" {return "<";}
+">" {return ">";} 
+
 
 
 . return "INVALID"
@@ -34,13 +41,14 @@
 
 %left '*' '/'
 %left '+' '-'
+%nonassoc "=" "<" ">" "else"
 
 
 %start PRGRM
 
 %%
 PRGRM: LET_STMT EOF {return $1; }
-	| EXPR EOF {return $1; }
+	| EXPR EOF {return {baseNode: $1, context:{}}; }
 ;
 
 LET_STMT: "let" EQ_STMT_GRP "in" EXPR {$$ = {baseNode:$4, context:$2 };}
@@ -63,6 +71,12 @@ EXPR: '(' EXPR ')' {$$= $2;}
 	| EXPR '/' EXPR {$$= new Node(div, $1, $3);}
 	| NUMERIC_LITERAL {$$= new Node(+($1));} 
 	| ID {$$ = new Node($1)}
+	| "if" CONDL_EXPR "then" EXPR "else" EXPR {$$ =  new Node($2, $4, $6);}
+	;
+	
+CONDL_EXPR: EXPR "==" EXPR {$$ = new CondlNode(eq, $1, $3);}
+	|EXPR "<" EXPR {$$ = new CondlNode(lt, $1, $3);}
+	|EXPR ">" EXPR {$$ = new CondlNode(gt, $1, $3);}
 	;
 %%
 function shallowMerge(x, y) {
@@ -90,8 +104,26 @@ function Node(val, l, r) {
 	this.right = r;
 	this.value = val;
 }
+function CondlNode(condF, condL, condR) {
+	if (!condF) {
+		throw {message: "No conditional function passed"}
+	}
+	if (!condL) {
+		throw {message: "No left conditional passed"}
+	}
+	if (!condR) {
+		throw {message: "No right conditional passed"}
+	}
+	this.condF = condF;
+	this.condL = condL;
+	this.condR = condR;
+}
 
 function add(x, y) {return x + y;}
 function sub(x, y) {return x - y;}
 function mul(x, y) {return x * y;}
 function div(x, y) {return x / y;}
+
+function gt(x, y) {return x > y;}
+function lt(x, y) {return x < y;}
+function eq(x, y) {return x == y;}

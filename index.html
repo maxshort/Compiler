@@ -87,6 +87,20 @@
 			}
 
 			function evaluateNode(node, context) {
+				if (node.value.condF != undefined) {//boolean special case
+					node.value.condL.value = evaluateNode(node.value.condL, context);
+					node.value.condR.value = evaluateNode(node.value.condR, context);
+					var useLeft = node.value.condF(node.value.condL.value, node.value.condR.value);
+					if (useLeft) {
+						node.value = evaluateNode(node.left, context);
+						return node.value;
+					}
+					else {
+						node.value = evaluateNode(node.right, context);
+						return node.value;
+					}
+				}
+				
 				if (!isNaN(node.value)) {
 					return node.value;
 				}
