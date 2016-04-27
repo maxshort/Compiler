@@ -43,7 +43,7 @@ PRGRM: LET_STMT EOF {return $1; }
 	| EXPR EOF {return $1; }
 ;
 
-LET_STMT: "let" EQ_STMT_GRP "in" EXPR {$$ = {baseNode:(new Node($4)), context:$2 };}
+LET_STMT: "let" EQ_STMT_GRP "in" EXPR {$$ = {baseNode:$4, context:$2 };}
 ;
 
 EQ_STMT_GRP: EQ_STMT EQ_STMT_GRP {$$ = shallowMerge($1, $2);}
@@ -62,6 +62,7 @@ EXPR: '(' EXPR ')' {$$= $2;}
 	| EXPR '*' EXPR {$$= new Node(mul, $1, $3);}
 	| EXPR '/' EXPR {$$= new Node(div, $1, $3);}
 	| NUMERIC_LITERAL {$$= new Node(+($1));} 
+	| ID {$$ = new Node($1)}
 	;
 %%
 function shallowMerge(x, y) {

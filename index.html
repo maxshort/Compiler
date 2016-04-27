@@ -48,10 +48,7 @@
 				makeTree(document.getElementById("progInput").value)
 				.then(function(result) {
 					alert("Prelim tree: " + JSON.stringify(result));
-				})
-				.then (function(result) {
-					//TODO: evaluate exprs here...
-					evaluateNode(result);
+					alert(evaluateNode(result.baseNode, result.context));
 				})
 				.catch(
 				function(err) {
@@ -60,7 +57,7 @@
 						alert("Parse error: "+err.parseError.message);
 					}
 					else if (typeof err.compileError !=='undefined') {
-						alert("compile error: " + err.compileError);
+						alert("compile error: " + err.compileError.message);
 					}
 					else if (typeof err.runError !== 'undefined') {
 						alert("run error: " + err.runError);
@@ -95,14 +92,18 @@
 				}
 				//http://stackoverflow.com/questions/5999998/how-can-i-check-if-a-javascript-variable-is-function-type
 				else if (typeof node.value === "function" && Object.prototype.toString.call(node.value) == "[object Function]") {
-					node.leftValue = evaluateNode(node.leftValue, context);
-					node.rightValue = evaluateNode(node.rightValue, context);
-					node.value = node.value(node.leftValue, node.rightValue);
+					node.left = evaluateNode(node.left, context);
+					node.right = evaluateNode(node.right, context);
+					node.value = node.value(node.left, node.right);
+					return node.value;
 				}
 				else if (typeof node.value === "string") {
 					node.value = evaluateNode(context[node.value]);
+					return node.value;
 				}
 				else {
+					console.log("Problem node value: ");
+					console.log(node.value);
 					throw {compileError:{message:"Unknown type for node value: " + node.value}};
 				}
 					
