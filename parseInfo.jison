@@ -66,8 +66,19 @@ EXPR: '(' EXPR ')' {$$= $2;}
 	;
 %%
 function shallowMerge(x, y) {
-		temp = Object.assign({}, x);
-		return Object.assign(temp, y);
+		var xProps = Object.getOwnPropertyNames(x);
+		var yProps = Object.getOwnPropertyNames(y);
+		var expectedSize = xProps.length + yProps.length;
+		var temp = Object.assign({}, x);
+		var combined = Object.assign(temp, y);
+		var combinedProps = Object.getOwnPropertyNames(combined);
+		if (expectedSize > combinedProps.length) { //there was a duplicate so set < sum of individual sizes
+			dup = xProps.find(function findADup(currentX) {
+				return y[currentX] !==undefined;
+			});
+			throw {message: "Duplicate identifier: " + dup}
+		}
+		return combined;
 }
 
 //value could be a literal value or an operation to combine l and r (which should be literal values...
