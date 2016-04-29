@@ -21,10 +21,11 @@
 		<script src="parser.js"></script>
 	</head>
 	<body>
-		<h1>The langauge of binary addition</h1>
+		<h1>A Small Haskell-like Language</h1>
 		
 		<label for="progInput">Enter your program here:</label>
-		<textarea id="progInput" name="progInput"></textarea>
+		<BR>
+		<textarea id="progInput" name="progInput" cols="80" rows="10"></textarea>
 		<input type="button" id="goButton" onclick="parseAndRun()" value="Run program"	>
 		<script>
 		
@@ -147,15 +148,81 @@
 		</div>
 		<h3>Valid programs: </h3>
 		<ul>
-			<li>a and b must be positive integers</li>
-			<li>does not care about whitespace</li>
-			<li>Examples(remove quotes):</li>
-			<ul>
-				<li>"2+2"</li>
-				<li>"4 + 8"</li>
-			</ul>
+			<li>The only type of variable is a positive integer</li>
+			<li>White space does not matter</li>
+			<li>Use let statments to assign a varible</li>
+			<li>As in Haskell, all variables are final.</li>
+			<li>As in Haskell, 'if' statements must always be followed by 'else' statements</li>
+			<li>Functions are not supported</li>
 		</ul>
+		
 		<h3>Supported Browsers</h3>
 		<p>Can be used by any browser that supports JavaScript Promises such as latest versions of Firefox, Chrome, or Edge.</p>
+		
+		<h3>Examples</h3>
+		<p> This section will go from simple to more complicated examples. Copy and paste the examples to run the code for yourself</p>
+		
+		<h4>Example 1</h4>
+		<p>A literal value</p>
+		<pre>
+		 3
+		</pre>
+		
+		<h4>Example 2</h4>
+		<p>An arithmetic expression</p>
+		<pre>
+		3 * (4 + 6)
+		</pre>
+		
+		<h4>Example 3</h4>
+		<p>An expression with 1 variable
+		<pre>
+		let x = 4 in
+		4*x
+		</pre>
+		
+		<h4>Example 4</h4>
+		<p>An expression with multiple variables
+		<pre>
+		let x = 4
+		y= 3 in
+		y*x
+		</pre>
+		
+		<h4>Example 5</h4>
+		<p>An expression with multiple variables that depend on each other out of order</p>
+		<pre>
+		let y = 2 * x
+		x = 3 in
+		x*y
+		</pre>
+		
+		<h4>Example 6</h4>
+		<p>An if statement with a simple conditional. True path</p>
+		<pre>
+		if 4 > 3 then 
+		1
+		else 
+		0
+		</pre>
+		
+		<h4>Example 7</h4>
+		<p>An if statement with a simple conditional. False path.</p>
+		<pre>
+		if 4 < 3 then
+		1 
+		else
+		0
+		</pre>
+		
+		<h4>Example 8</h4>
+		<p>An if statement with a more complicated conditional</p>
+		<pre>
+		if 4*4< 3 then
+		1 
+		else
+		0
+		</pre>
+		
 	</body>
 </html>
