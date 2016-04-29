@@ -112,7 +112,7 @@
 					return node.value;
 				}
 				else if (typeof node.value === "string") {
-					node.value = evaluateNode(context[node.value]);
+					node.value = evaluateNode(context[node.value], context);
 					return node.value;
 				}
 				else {
