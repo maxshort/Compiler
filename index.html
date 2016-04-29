@@ -48,7 +48,7 @@
 						
 				makeTree(document.getElementById("progInput").value)
 				.then(function(result) {
-					alert("Prelim tree: " + JSON.stringify(result));
+					//alert("Prelim tree: " + JSON.stringify(result));
 					alert(evaluateNode(result.baseNode, result.context));
 				})
 				.catch(
@@ -142,10 +142,7 @@
 			return llvmDis(llvmAs(byteCode)); 
 			};
 				</script>
-		<p>Results: </p>		
-		<div id="resultDiv" class="resultsBox">
-			<p id ="results"></p>
-		</div>
+		
 		<h3>Valid programs: </h3>
 		<ul>
 			<li>The only type of variable is a positive integer</li>
