@@ -123,24 +123,6 @@
 				}
 					
 			}
-			
-			function genAssembly(parseTree) {
-				var byteCode = ('target triple = "i386-pc-linux-gnu"\n'+
-
-			'@.prf = private constant [2 x i8] c"%i"\n'+
-
-
-			'define i32 @main() {\n'+
-			'entry:\n'+
-			  '%str1 = getelementptr inbounds [2 x i8]* @.prf, i32 0, i32 0\n'+ 
-			  '%0 = add i32 ' + parseTree.arguments[0] + ',' + parseTree.arguments[2] + '\n'+
-			  '%acall = call i32 (i8*,...)* @printf(i8* %str1, i32 %0)\n'+
-			  'ret i32 1\n'+
-			'}\n'+
-
-			'declare i32 @printf(i8*, ...)\n');
-			return llvmDis(llvmAs(byteCode)); 
-			};
 				</script>
 		
 		<h3>Valid programs: </h3>

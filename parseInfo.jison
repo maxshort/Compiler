@@ -1,14 +1,3 @@
-%{/*var funcs = {
-	shallowMerge:function shallowMerge(x, y) {
-		alert(1 + JSON.Stringify(x));
-		alert(2 + JSON.Stringify(y));
-		temp = Object.assign({}, x);
-		return Object.assign(temp, y);
-	}
-	}*/
-%}
-
-
 %lex
 
 %%
