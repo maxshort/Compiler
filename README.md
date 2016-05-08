@@ -1,3 +1,5 @@
+>Note: After turning in my thesis, I noticed the order of operations is reversed for multiplication/division and addition/subtraction in `parseInfo.jison`. Use parenthesis to enforce correct order.
+
 # Compiler
 Haskell inspired toy-language that compiles and runs entirely in the browser. Does basic arithmetic/variable expressions. Implements lazy evaluation.
 
